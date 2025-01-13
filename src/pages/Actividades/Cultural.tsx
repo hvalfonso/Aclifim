@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import { FaEdit, FaTrash, FaCheck, FaList, FaTasks } from "react-icons/fa";
 
@@ -246,3 +247,13 @@ export default function ActiCultural () {
     </div>
   );
 };
+=======
+
+const Cultural = () => {
+  return (
+    <div>Cultural</div>
+  )
+}
+
+export default Cultural
+>>>>>>> 076594b783447e234f7f4bf787555cacbb58490e

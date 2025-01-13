@@ -1,9 +1,13 @@
 // src/index.tsx
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import "./App.css";
 
+<<<<<<< HEAD
 // Esto son las rutas del autenticacion
+=======
+import AppRoutes from './routes/AppRoutes';
+// import Home from './pages/Home/Home';
+>>>>>>> 076594b783447e234f7f4bf787555cacbb58490e
 // import Login from './pages/Auth/Login';
 // import Register from './pages/Auth/Register';
 
@@ -23,6 +27,7 @@ import ActiCultural from './pages/Actividades/Cultural';
 // import PCultural from './pages/Participacion/PCultural/PCultural'
 
 createRoot(document.getElementById('root')!).render(
+<<<<<<< HEAD
 <StrictMode>
     {/* <Register></Register> */}
     {/* <Login></Login> */}
@@ -37,4 +42,11 @@ createRoot(document.getElementById('root')!).render(
 
     <ActiCultural></ActiCultural>
 </StrictMode>
+=======
+    // {/* <Register></Register> */}
+    // {/* <Login></Login> */}
+    // {/* <Home></Home> */}
+    // {/* <Asociados></Asociados> */}
+    <AppRoutes />
+>>>>>>> 076594b783447e234f7f4bf787555cacbb58490e
 );
