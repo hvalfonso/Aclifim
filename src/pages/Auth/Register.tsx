@@ -130,7 +130,7 @@ const Register: React.FC = () => {
 
                         <div className="group">
                             <label htmlFor="email" className="sr-only">
-                                Email address
+                                Correo
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -152,7 +152,7 @@ const Register: React.FC = () => {
 
                         <div className="group">
                             <label htmlFor="username" className="sr-only">
-                                Username
+                                Nombre de usuario
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -167,14 +167,14 @@ const Register: React.FC = () => {
                                     placeholder="Username"
                                     value={formData.username}
                                     onChange={handleInputChange}
-                                    aria-label="Username"
+                                    aria-label="Nombre de usuario"
                                 />
                             </div>
                         </div>
 
                         <div className="group">
                             <label htmlFor="password" className="sr-only">
-                                Password
+                                Contraseña
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -186,7 +186,7 @@ const Register: React.FC = () => {
                                     type="password"
                                     required
                                     className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border-gray-600 placeholder-gray-500 text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                                    placeholder="Password"
+                                    placeholder="Contraseña"
                                     value={formData.password}
                                     onChange={handleInputChange}
                                     aria-label="Password"
@@ -196,7 +196,7 @@ const Register: React.FC = () => {
 
                         <div className="group">
                             <label htmlFor="confirmPassword" className="sr-only">
-                                Confirm Password
+                                Confirmar Contraseña
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -208,7 +208,7 @@ const Register: React.FC = () => {
                                     type="password"
                                     required
                                     className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border-gray-600 placeholder-gray-500 text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                                    placeholder="Confirm Password"
+                                    placeholder="Confirmar Contraseña"
                                     value={formData.confirmPassword}
                                     onChange={handleInputChange}
                                     aria-label="Confirm Password"
