@@ -1,3 +1,4 @@
+import { PasswordProps } from "../types/users";
 import axiosInstance from "./axiosInstance";
 
 
@@ -18,9 +19,10 @@ export const getUser = async (id: number) => {
     }
 }
 
-export const updatePass = async () => {
+// EJEMPLO
+export const updatePass = async (data: PasswordProps) => {
     try {
-        return await axiosInstance.put(`/user/password`)
+        return await axiosInstance.put(`/user/password`, data)
     } catch (error) {
         console.log(error)
     }
