@@ -1,3 +1,5 @@
+import { ActividadDeportivaProps, ActualizarADeportivaProps } from "../types/deportiva"
+import { ActualizarPDeportivaProps, PDeportivaProps } from "../types/PDeportiva"
 import axiosInstance from "./axiosInstance"
 
 export const getActividadDeportiva = async (id: number) => {
@@ -8,38 +10,44 @@ export const getActividadDeportiva = async (id: number) => {
     }
 }
 
-export const crearActividadDeportiva = async () => {
+// post de actividad deportiva
+export const crearActividadDeportiva = async (data: ActividadDeportivaProps) => {
     try {
-       return await axiosInstance.post(`/actividadDeportiva`)
+       return await axiosInstance.post(`/actividadDeportiva`, data)
     } catch (error) {
         console.log(error)
     }
 }
 
-export const crearParticipacionDeportiva = async () => {
+
+// post de participacion deportiva
+export const crearParticipacionDeportiva = async (data: PDeportivaProps) => {
     try {
-       return await axiosInstance.post(`/participacionDeportiva`)
+       return await axiosInstance.post(`/participacionDeportiva`, data)
     } catch (error) {
         console.log(error)
     }
 }
 
-export const updateActividadDeportiva = async () => {
+// put de actividad deportiva
+export const updateActividadDeportiva = async (data: ActualizarADeportivaProps) => {
     try {
-       return await axiosInstance.put(`/actividadDeportiva`)
+       return await axiosInstance.put(`/actividadDeportiva`, data)
     } catch (error) {
         console.log(error)
     }
 }
 
-export const updateParticipacionDeportiva = async () => {
+// put de participacion deportiva
+export const updateParticipacionDeportiva = async (data: ActualizarPDeportivaProps) => {
     try {
-       return await axiosInstance.put(`/participacionDeportiva`)
+       return await axiosInstance.put(`/participacionDeportiva`, data)
     } catch (error) {
         console.log(error)
     }
 }
 
+// delete de actividad deportiva
 export const deleteActividadDeportiva = async (id: number) => {
     try {
        return await axiosInstance.delete(`/actividadDeportiva/${id}`)
@@ -48,6 +56,7 @@ export const deleteActividadDeportiva = async (id: number) => {
     }
 }
 
+// delete de participacion deportiva
 export const deleteParticipacionDeportiva = async (id: number) => {
     try {
        return await axiosInstance.delete(`/participacionDeportiva/${id}`)

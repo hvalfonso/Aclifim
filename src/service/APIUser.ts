@@ -4,7 +4,7 @@ import axiosInstance from "./axiosInstance";
 
 export const getAllUsers = async () => {
     try {
-       return await axiosInstance.get("/users")
+        return await axiosInstance.get("/users")
     } catch (error) {
         console.log(error)
     }

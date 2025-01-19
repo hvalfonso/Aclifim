@@ -1,9 +1,10 @@
+import { ActualizarAsociadoProps, AsociadoProps } from "../types/asociados";
 import axiosInstance from "./axiosInstance";
 
 
 export const getAllAsociados = async () => {
     try {
-       return await axiosInstance.get("/asociados")
+        return await axiosInstance.get("/asociado")
     } catch (error) {
         console.log(error)
     }
@@ -11,39 +12,47 @@ export const getAllAsociados = async () => {
 
 export const getAsociado = async (id: number) => {
     try {
-       return await axiosInstance.get(`/asociado/${id}`)
+        return await axiosInstance.get(`/asociado/${id}`)
     } catch (error) {
         console.log(error)
     }
 }
 
-export const createAsociado = async () => {
+
+// Para el post 
+export const createAsociado = async (data: AsociadoProps ) => {
     try {
-       return await axiosInstance.post(`/asociado`)
+        return await axiosInstance.post(`/asociado`, data)
     } catch (error) {
         console.log(error)
     }
 }
 
+
+// Para el delete
 export const deleteAsociado = async (id: number) => {
     try {
-       return await axiosInstance.delete(`/asociado/${id}`)
+        return await axiosInstance.delete(`/asociado/${id}`)
     } catch (error) {
         console.log(error)
     }
 }
 
-export const updateAsociado = async (id: number) => {
+
+// Para el put tiene props 
+export const updateAsociado = async (data: ActualizarAsociadoProps) => {
     try {
-       return await axiosInstance.put(`/asociado/${id}`)
+        return await axiosInstance.put(`/asociado/${data}`)
     } catch (error) {
         console.log(error)
     }
 }
 
+
+// Aqui estaba getAsociadoDinamic y en el swagger sale como Post
 export const getAsociadoDinamic = async () => {
     try {
-       return await axiosInstance.get(`/asociado/dinamic`)
+        return await axiosInstance.get(`/asociado/dinamic`)
     } catch (error) {
         console.log(error)
     }
