@@ -1,125 +1,108 @@
 import { useState, FormEvent } from "react";
 import { FiPlus, FiX } from "react-icons/fi";
+import { createAsociado } from "../../service/ApiEjemplo"; // Asegúrate de que esta sea la ruta correcta
+import { AsociadoProps } from "../../types/asociados";
 
-// Definir tipos para los datos del asociado
-interface Asociado {
-  id: number;
-  Nombre: string;
-  Apellido: string;
-  SegundoApellido: string;
-  CI: string;
-  Sexo: string;
-  Telefono: string;
-  OtroTelefono: string;
-  Municipio: string;
-  Direccion: string;
-  Estado: "activo" | "inactivo";
+// Tipos y estructura del componente
+interface AñadirAsociadoProps {
+  onAsociadoAdded: (asociado: AsociadoProps) => void;
 }
 
+// Definir la estructura de errores de los campos
 interface FormErrors {
-  Nombre? : string;
-  Apellido? : string;
-  SegundoApellido? : string;
-  CI? : string;
-  Sexo? : string;
-  Telefono? : string;
-  OtroTelefono? : string;
-  Municipio? : string;
-  Direccion? : string;
+  name?: string;
+  Apellido?: string;
+  phone?: string;
+  Direccion?: string;
+  IDMunicipio?: string;
+  NumeroPerteneciente?: string;
+  NumeroT?: string;
+  Sexo?: string;
+  Activo?: string;
 }
 
-export default function AñadirAsociado() {
-  const [asociado, setAsociado] = useState<Asociado[]>([
-    {
-      id: 1,
-      Nombre: "John Doe",
-      Apellido: "Valls",
-      SegundoApellido: "Alfonso",
-      CI: "01091268543",
-      Sexo: "Masculino",
-      Estado: "activo",
-      Telefono: "54482464",
-      OtroTelefono: "54482464",
-      Municipio: "Cerro",
-      Direccion: "20 de mayo"
-    },
-  ]);
-
+export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProps) {
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [formData, setFormData] = useState<Omit<Asociado, "id" | "createdAt">>({
-    Nombre: "",
+  const [formData, setFormData] = useState<Omit<AsociadoProps, "ID">>({
+    name: "",
     Apellido: "",
-    SegundoApellido: "",
-    CI: "",
-    Sexo: "",
-    Telefono: "",
-    OtroTelefono: "",
-    Municipio: "",
     Direccion: "",
-    Estado: "activo",
+    IDMunicipio: 0,
+    NumeroPerteneciente: "",
+    NumeroT: 0,
+    Sexo: true, // Valor predeterminado si no lo tienes en el formulario
+    Activo: true, // Valor predeterminado si no lo tienes en el formulario
+    Carnet: 0,
   });
 
   const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = (): FormErrors => {
     const errors: FormErrors = {};
-    if (!formData.Nombre.trim()) errors.Nombre = "Name is required";
-    if (!formData.Apellido.trim()) errors.Apellido = "Surname is required";
-    if (!formData.SegundoApellido.trim()) errors.SegundoApellido = "Email is required";
-    if (!formData.Sexo.trim()) errors.Sexo = "Email is required";
-    if (!formData.Municipio.trim()) errors.Municipio = "Email is required";
-    if (!formData.Telefono.trim()) errors.Telefono = "Cellphone is required";
-    if (!formData.OtroTelefono.trim()) errors.OtroTelefono = "Cellphone is required";
-    if (!formData.CI.trim()) errors.CI = "Cellphone is required";
+    if (!formData.name.trim()) errors.name = "Nombre es requerido";
+    if (!formData.Apellido.trim()) errors.Apellido = "Apellido es requerido";
+    if (!formData.Direccion.trim()) errors.Direccion = "Dirección es requerida";
+    if (!formData.IDMunicipio) errors.IDMunicipio = "Municipio es requerido";
+    if (!formData.NumeroPerteneciente.trim()) errors.NumeroPerteneciente = "Número Pertinente es requerido";
+    if (!formData.NumeroT) errors.NumeroT = "Número de Teléfono es requerido";
+    if (formData.Sexo === undefined) errors.Sexo = "Sexo es requerido";
+    if (formData.Activo === undefined) errors.Activo = "Estado de actividad es requerido";
     return errors;
   };
-  const handleSubmit = (e: FormEvent): void => {
+
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     const errors = validateForm();
-    if (Object.keys(errors).length === 0) {
-      const newAsociado: Asociado = {
-        id: asociado.length + 1,
-        ...formData
-      };
-      setAsociado([...asociado, newAsociado]);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Llama a la API para crear el asociado
+      const newAsociado = await createAsociado(formData);
+
+      // Si la solicitud es exitosa, actualiza el estado local
+      onAsociadoAdded(newAsociado);
       resetForm();
       setShowForm(false);
-    } else {
-      setFormErrors(errors);
+    } catch (error) {
+      console.error("Error al crear el asociado:", error);
+      alert("Hubo un error al intentar crear el asociado.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const resetForm = () => {
     setFormData({
-      Nombre: "",
+      name: "",
       Apellido: "",
-      SegundoApellido: "",
-      CI: "",
-      Sexo: "",
-      Telefono: "",
-      OtroTelefono: "",
-      Municipio: "",
       Direccion: "",
-      Estado: "activo",
+      IDMunicipio: 0,
+      NumeroPerteneciente: "",
+      NumeroT: 0,
+      Sexo: true, // Valor predeterminado
+      Activo: true, // Valor predeterminado
+      Carnet: 0,
     });
     setFormErrors({});
   };
 
-  const handleAddNewUserClick = () => {
-    setShowForm(true);
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center ">
+      <div className="flex justify-between items-center">
         <button
-          onClick={handleAddNewUserClick}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
+          onClick={() => setShowForm(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors text-[20px]"
         >
           <FiPlus /> Añadir Asociado
         </button>
       </div>
 
+      {/* Formulario */}
       <div
         className={`fixed inset-y-0 right-0 w-96 bg-white shadow-lg transform ${
           showForm ? "translate-x-0" : "translate-x-full"
@@ -142,13 +125,13 @@ export default function AñadirAsociado() {
               <label className="block text-sm font-medium text-gray-700">Nombre</label>
               <input
                 type="text"
-                value={formData.Nombre}
-                onChange={(e) => setFormData({ ...formData, Nombre: e.target.value })}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  formErrors.Nombre ? "border-red-500" : ""
+                  formErrors.name ? "border-red-500" : ""
                 }`}
               />
-              {formErrors.Nombre && <p className="mt-1 text-sm text-red-600">{formErrors.Nombre}</p>}
+              {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
             </div>
 
             {/* Campo Apellido */}
@@ -164,93 +147,36 @@ export default function AñadirAsociado() {
               />
               {formErrors.Apellido && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido}</p>}
             </div>
-
-            {/* Campo CI */}
+            {/* Numero Perteneciente*/}
             <div>
-              <label className="block text-sm font-medium text-gray-700">CI</label>
+              <label className="block text-sm font-medium text-gray-700">Numero</label>
               <input
-                type="text"
-                value={formData.CI}
-                onChange={(e) => setFormData({ ...formData, CI: e.target.value })}
+                type="number"
+                value={formData.NumeroPerteneciente}
+                onChange={(e) => setFormData({ ...formData, NumeroPerteneciente: e.target.value })}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  formErrors.CI ? "border-red-500" : ""
+                  formErrors.NumeroPerteneciente ? "border-red-500" : ""
                 }`}
               />
-              {formErrors.CI && <p className="mt-1 text-sm text-red-600">{formErrors.CI}</p>}
+              {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
             </div>
-
-            {/* Campo telefono */}
+            {/* Campo Teléfono */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Telefono</label>
+              <label className="block text-sm font-medium text-gray-700">Teléfono</label>
               <input
-                type="tel"
-                value={formData.Telefono}
-                onChange={(e) => setFormData({ ...formData, Telefono: e.target.value })}
+                type="number"
+                value={formData.NumeroT}
+                onChange={(e) => setFormData({ ...formData, NumeroT: parseInt(e.target.value) })}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  formErrors.Telefono ? "border-red-500" : ""
+                  formErrors.NumeroT ? "border-red-500" : ""
                 }`}
               />
-              {formErrors.Telefono && <p className="mt-1 text-sm text-red-600">{formErrors.Telefono}</p>}
+              {formErrors.NumeroT && <p className="mt-1 text-sm text-red-600">{formErrors.NumeroT}</p>}
             </div>
 
-            {/* Campo telefono */}
+            {/* Campo Dirección */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Otro Telefono</label>
-              <input
-                type="tel"
-                value={formData.OtroTelefono}
-                onChange={(e) => setFormData({ ...formData, OtroTelefono: e.target.value })}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  formErrors.OtroTelefono ? "border-red-500" : ""
-                }`}
-              />
-              {formErrors.OtroTelefono && <p className="mt-1 text-sm text-red-600">{formErrors.OtroTelefono}</p>}
-            </div>
-
-
-            {/* Campo Estado */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Estado</label>
-              <select
-                value={formData.Estado}
-                onChange={(e) => setFormData({ ...formData, Estado: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="activo">active</option>
-                <option value="inactivo">inactive</option>
-              </select>
-            </div>
-
-            {/* Campo sexo */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Sexo</label>
-              <select
-                value={formData.Sexo}
-                onChange={(e) => setFormData({ ...formData, Sexo: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="User">Masculino</option>
-                <option value="Admin">Femenino</option>
-              </select>
-            </div>
-
-             {/* Campo Municipio */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Municipio</label>
-              <input
-                type="text"
-                value={formData.Municipio}
-                onChange={(e) => setFormData({ ...formData, Municipio: e.target.value })}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  formErrors.Municipio ? "border-red-500" : ""
-                }`}
-              />
-              {formErrors.Municipio && <p className="mt-1 text-sm text-red-600">{formErrors.Municipio}</p>}
-            </div>
-
-             {/* Campo Direccion */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Direccion</label>
+              <label className="block text-sm font-medium text-gray-700">Dirección</label>
               <input
                 type="text"
                 value={formData.Direccion}
@@ -262,19 +188,76 @@ export default function AñadirAsociado() {
               {formErrors.Direccion && <p className="mt-1 text-sm text-red-600">{formErrors.Direccion}</p>}
             </div>
 
+            {/* Campo Municipio */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Municipio</label>
+              <input
+                type="number"
+                value={formData.IDMunicipio}
+                onChange={(e) => setFormData({ ...formData, IDMunicipio: parseInt(e.target.value) })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.IDMunicipio ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.IDMunicipio && <p className="mt-1 text-sm text-red-600">{formErrors.IDMunicipio}</p>}
+            </div>
+
+            {/* Campo Sexo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Sexo</label>
+              <select
+                value={formData.Sexo ? "Masculino" : "Femenino"}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    Sexo: e.target.value === "Masculino" ? true : false,
+                  })
+                }
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Sexo ? "border-red-500" : ""
+                }`}
+              >
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+              {formErrors.Sexo && <p className="mt-1 text-sm text-red-600">{formErrors.Sexo}</p>}
+            </div>
+
+            {/* Campo Activo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Estado de actividad</label>
+              <select
+                value={formData.Activo ? "Activo" : "Inactivo"}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    Activo: e.target.value === "Activo" ? true : false,
+                  })
+                }
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Activo ? "border-red-500" : ""
+                }`}
+              >
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+              {formErrors.Activo && <p className="mt-1 text-sm text-red-600">{formErrors.Activo}</p>}
+            </div>
+
             <div className="flex gap-4 pt-4">
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Save
+                {isSubmitting ? "Guardando..." : "Guardar"}
               </button>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
                 className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
               >
-                Cancel
+                Cancelar
               </button>
             </div>
           </form>

@@ -25,7 +25,6 @@ export interface Asociado{
 }
 
 
-
 export interface ActualizarAsociadoProps{
     "Activo": boolean,
     "Apellido": string,

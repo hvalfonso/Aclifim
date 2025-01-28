@@ -21,3 +21,17 @@ export interface Getusers {
         "provincia": string;
         "username": string
 }
+
+// ejemplo
+export interface User {
+    "id": number;
+    "name": string;
+    "email": string;
+    "address": {
+        "street": string,
+        "suite": string,
+        "city": string,
+    };
+    "phone": number,
+}
+
