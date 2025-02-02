@@ -11,7 +11,7 @@ interface AñadirAsociadoProps {
 // Definir la estructura de errores de los campos
 interface FormErrors {
   name?: string;
-  Apellido?: string;
+  Apellido1?: string;
   Apellido2?: string;
   phone?: string;
   Direccion?: string;
@@ -27,7 +27,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
   const [showForm, setShowForm] = useState<boolean>(false);
   const [formData, setFormData] = useState<Omit<AsociadoProps, "ID">>({
     name: "",
-    Apellido: "",
+    Apellido1: "",
     Apellido2: "",
     Direccion: "",
     IDMunicipio: 0,
@@ -44,8 +44,8 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
   const validateForm = (): FormErrors => {
     const errors: FormErrors = {};
     if (!formData.name.trim()) errors.name = "Nombre es requerido";
-    if (!formData.Apellido.trim()) errors.Apellido = "Primer Apellido es requerido";
-    if (!formData.Apellido.trim()) errors.Apellido = "Segundo Apellido es requerido";
+    if (!formData.Apellido1.trim()) errors.Apellido1 = "Primer Apellido es requerido";
+    if (!formData.Apellido2.trim()) errors.Apellido2 = "Segundo Apellido es requerido";
     if (!formData.Direccion.trim()) errors.Direccion = "Dirección es requerida";
     if (!formData.IDMunicipio) errors.IDMunicipio = "Municipio es requerido";
     if (!formData.NumeroPerteneciente.trim()) errors.NumeroPerteneciente = "Número Pertinente es requerido";
@@ -84,7 +84,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
   const resetForm = () => {
     setFormData({
       name: "",
-      Apellido: "",
+      Apellido1: "",
       Apellido2: "",
       Direccion: "",
       IDMunicipio: 0,
@@ -145,13 +145,13 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
               <label className="block text-sm font-medium text-gray-700">Primer Apellido</label>
               <input
                 type="text"
-                value={formData.Apellido}
-                onChange={(e) => setFormData({ ...formData, Apellido: e.target.value })}
+                value={formData.Apellido1}
+                onChange={(e) => setFormData({ ...formData, Apellido1: e.target.value })}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  formErrors.Apellido ? "border-red-500" : ""
+                  formErrors.Apellido1 ? "border-red-500" : ""
                 }`}
               />
-              {formErrors.Apellido && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido}</p>}
+              {formErrors.Apellido1 && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido1}</p>}
             </div>
 
             {/* Campo Apellido2 */}

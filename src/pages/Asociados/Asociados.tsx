@@ -128,7 +128,7 @@ export default function Asociados() {
                         {currentItems.map((asociado, index) => (
                             <tr key={index} className="border-b hover:bg-gray-50">
                                 <td className="px-4 py-2 text-lg">{asociado.name}</td>
-                                <td className="px-4 py-2 text-lg">{asociado.Apellido}</td>
+                                <td className="px-4 py-2 text-lg">{asociado.Apellido1}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Apellido2}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Carnet}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Sexo}</td>

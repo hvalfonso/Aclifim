@@ -1,6 +1,6 @@
 export interface AsociadoProps {
     "Activo": boolean,
-    "Apellido": string,
+    "Apellido1": string,
     "Apellido2": string,
     "Carnet": number,
     "Direccion": string,
@@ -14,7 +14,7 @@ export interface AsociadoProps {
 
 export interface Asociado{
     "Activo": boolean,
-    "Apellido": string,
+    "Apellido1": string,
     "Apellido2": string,
     "Carnet": number,
     "Direccion": string,
