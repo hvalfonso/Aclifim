@@ -1,6 +1,7 @@
 export interface AsociadoProps {
     "Activo": boolean,
     "Apellido": string,
+    "Apellido2": string,
     "Carnet": number,
     "Direccion": string,
     "IDMunicipio": number,
@@ -14,6 +15,7 @@ export interface AsociadoProps {
 export interface Asociado{
     "Activo": boolean,
     "Apellido": string,
+    "Apellido2": string,
     "Carnet": number,
     "Direccion": string,
     "ID": number,

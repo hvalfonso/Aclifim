@@ -12,11 +12,13 @@ interface AñadirAsociadoProps {
 interface FormErrors {
   name?: string;
   Apellido?: string;
+  Apellido2?: string;
   phone?: string;
   Direccion?: string;
   IDMunicipio?: string;
   NumeroPerteneciente?: string;
   NumeroT?: string;
+  Carnet?: string;
   Sexo?: string;
   Activo?: string;
 }
@@ -26,6 +28,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
   const [formData, setFormData] = useState<Omit<AsociadoProps, "ID">>({
     name: "",
     Apellido: "",
+    Apellido2: "",
     Direccion: "",
     IDMunicipio: 0,
     NumeroPerteneciente: "",
@@ -41,11 +44,13 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
   const validateForm = (): FormErrors => {
     const errors: FormErrors = {};
     if (!formData.name.trim()) errors.name = "Nombre es requerido";
-    if (!formData.Apellido.trim()) errors.Apellido = "Apellido es requerido";
+    if (!formData.Apellido.trim()) errors.Apellido = "Primer Apellido es requerido";
+    if (!formData.Apellido.trim()) errors.Apellido = "Segundo Apellido es requerido";
     if (!formData.Direccion.trim()) errors.Direccion = "Dirección es requerida";
     if (!formData.IDMunicipio) errors.IDMunicipio = "Municipio es requerido";
     if (!formData.NumeroPerteneciente.trim()) errors.NumeroPerteneciente = "Número Pertinente es requerido";
     if (!formData.NumeroT) errors.NumeroT = "Número de Teléfono es requerido";
+    if (!formData.Carnet) errors.Carnet = "El Carnet de Identidad es requerido";
     if (formData.Sexo === undefined) errors.Sexo = "Sexo es requerido";
     if (formData.Activo === undefined) errors.Activo = "Estado de actividad es requerido";
     return errors;
@@ -80,6 +85,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
     setFormData({
       name: "",
       Apellido: "",
+      Apellido2: "",
       Direccion: "",
       IDMunicipio: 0,
       NumeroPerteneciente: "",
@@ -136,7 +142,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
 
             {/* Campo Apellido */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Apellido</label>
+              <label className="block text-sm font-medium text-gray-700">Primer Apellido</label>
               <input
                 type="text"
                 value={formData.Apellido}
@@ -147,9 +153,24 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
               />
               {formErrors.Apellido && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido}</p>}
             </div>
+
+            {/* Campo Apellido2 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Segundo Apellido</label>
+              <input
+                type="text"
+                value={formData.Apellido2}
+                onChange={(e) => setFormData({ ...formData, Apellido2: e.target.value })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Apellido2 ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.Apellido2 && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido2}</p>}
+            </div>
+
             {/* Numero Perteneciente*/}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Numero</label>
+              <label className="block text-sm font-medium text-gray-700">Número Movil</label>
               <input
                 type="number"
                 value={formData.NumeroPerteneciente}
@@ -172,6 +193,20 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
                 }`}
               />
               {formErrors.NumeroT && <p className="mt-1 text-sm text-red-600">{formErrors.NumeroT}</p>}
+            </div>
+
+             {/* Carnet de Identidad */}
+             <div>
+              <label className="block text-sm font-medium text-gray-700">CI</label>
+              <input
+                type="number"
+                value={formData.Carnet}
+                onChange={(e) => setFormData({ ...formData, Carnet: parseInt(e.target.value) })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Carnet ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.Carnet && <p className="mt-1 text-sm text-red-600">{formErrors.Carnet}</p>}
             </div>
 
             {/* Campo Dirección */}

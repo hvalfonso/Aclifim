@@ -10,6 +10,5 @@ import Sidebar from './Sidebar';
 createRoot(document.getElementById('root')!).render(
 <StrictMode>
     <Sidebar></Sidebar>
-    {/* <Home></Home> */}
 </StrictMode>
 );

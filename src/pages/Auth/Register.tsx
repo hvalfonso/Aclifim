@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { FaUser, FaEnvelope, FaLock, FaUpload, FaMapMarkerAlt } from "react-icons/fa";
+import axiosInstance from "../../service/axiosEjemplo"; // Asegúrate de importar la instancia de Axios
 
 
 interface FormData {
@@ -54,12 +55,15 @@ const Register: React.FC = () => {
 
             // Si se selecciona una provincia, actualizamos los municipios
             if (name === "provincia") {
-                setMunicipios(provinciasYMunicipios[value] || []);
+                const nuevosMunicipios = provinciasYMunicipios[value] || [];
                 setFormData((prev) => ({
                     ...prev,
-                    municipio: "", // Reseteamos el municipio seleccionado
+                    provincia: value,
+                    municipio: "", // Resetea el municipio si cambia la provincia
                 }));
+                setMunicipios(nuevosMunicipios);
             }
+            
 
         setFormData((prev) => ({
             ...prev,
@@ -79,21 +83,35 @@ const Register: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        if (formData.password !== formData.confirmPassword) {
-            alert("Las contraseñas no coinciden.");
-            return;
-        }
-        setLoading(true);
+const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+        alert("Las contraseñas no coinciden.");
+        return;
+    }
+    setLoading(true);
+    
+    try {
+        const formDataToSend = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value instanceof File) {
+                formDataToSend.append(key, value);
+            } else {
+                formDataToSend.append(key, value as string);
+            }
+        });
 
-        // Simulating API call
-        setTimeout(() => {
-            setLoading(false);
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 3000);
-        }, 2000);
-    };
+        const response = await axiosInstance.post("/register", formDataToSend);
+        console.log("Registro exitoso:", response.data);
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+    } catch (error) {
+        console.error("Error en el registro:", error);
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     return (
         <div className="min-h-screen py-12 px-4 sm:px-16 lg:px-8 bg-gradient-to-br from-gray-900 to-gray-800">

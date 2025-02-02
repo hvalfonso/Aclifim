@@ -112,7 +112,7 @@ export default function Asociados() {
                 <table className="w-full table-auto">
                     <thead className="">
                         <tr className="bg-gray-100 text-left text-lg text-[20px] ">
-                            {["Nombre", "Apellido", "Carnet", "Sexo", "Direccion", "Municipio", "Numero Movil", "Otro Telefono", "Activo"].map((header, index) => (
+                            {["Nombre", "Primer Apellido", "Segundo Apellido", "CI", "Sexo", "Dirección", "Municipio", "Número Movil", "Otro Teléfono", "Activo"].map((header, index) => (
                                 <th
                                     key={index}
                                     className="px-4 py-2 cursor-pointer"
@@ -121,7 +121,7 @@ export default function Asociados() {
                                     {header}
                                 </th>
                             ))}
-                            <th className="px-4 py-2">Actions</th>
+                            <th className="px-4 py-2">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,6 +129,7 @@ export default function Asociados() {
                             <tr key={index} className="border-b hover:bg-gray-50">
                                 <td className="px-4 py-2 text-lg">{asociado.name}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Apellido}</td>
+                                <td className="px-4 py-2 text-lg">{asociado.Apellido2}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Carnet}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Sexo}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Direccion}</td>

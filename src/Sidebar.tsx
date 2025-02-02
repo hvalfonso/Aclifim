@@ -6,6 +6,8 @@ import Asociados from "./pages/Asociados/Asociados";
 import User from "./pages/User/User";
 import { FaPerson } from "react-icons/fa6";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaTwitter} from "react-icons/fa";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
 
 
 function Navbar () {
@@ -19,7 +21,7 @@ function Navbar () {
           <Link to="/" className="text-white hover:text-blue-200 flex items-center gap-2"><FaHome size={20}/>Inicio</Link>
           <Link to="/asociado" className="text-white hover:text-blue-200 flex items-center gap-2"><FaPerson size={20} />Asociados</Link>
           <Link to="/user" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserEdit size={20} />Editar Usuario</Link>
-          <Link to="/auth" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserPlus size={20} />Login/Registrarse</Link>
+          <Link to="/auth/Login" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserPlus size={20} />Login/Registrarse</Link>
         </div>
         <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,10 +31,10 @@ function Navbar () {
       </div>
       {isOpen && (
         <div className="md:hidden mt-2">
-          <Link to="/" className="block text-white p-2 hover:bg-blue-700">Home</Link>
-          <Link to="/companies" className="block text-white p-2 hover:bg-blue-700">Companies</Link>
-          <Link to="/events" className="block text-white p-2 hover:bg-blue-700">Events</Link>
-          <Link to="/auth" className="block text-white p-2 hover:bg-blue-700">Login/Register</Link>
+          <Link to="/" className="block text-white p-2 hover:bg-blue-700">Inicio</Link>
+          <Link to="/asociado" className="block text-white p-2 hover:bg-blue-700">Asociados</Link>
+          <Link to="/user" className="block text-white p-2 hover:bg-blue-700">Editar Usuario</Link>
+
         </div>
       )}
     </nav>
@@ -253,6 +255,8 @@ const Sidebar = () => {
           <Route path="/" element={<HomePage />}/>
           <Route path="/asociado" element={<Asociados />} />
           <Route path="/user" element={<User />} />
+          <Route path="/auth/Login" element={<Login />} />
+          <Route path="/auth/Register" element={<Register />} />
         </Routes>
       </div>
     </Router>
