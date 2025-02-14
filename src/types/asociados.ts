@@ -1,3 +1,4 @@
+// interfaz de crear asociado request
 export interface AsociadoProps {
     "Activo": boolean,
     "Apellido1": string,
@@ -8,17 +9,17 @@ export interface AsociadoProps {
     "NumeroPerteneciente": string,
     "NumeroT": number,
     "Sexo": boolean,
-    "name": string
+    "name": string,
 }
 
-
+// interfaz de Asociado responses
 export interface Asociado{
     "Activo": boolean,
     "Apellido1": string,
     "Apellido2": string,
     "Carnet": number,
     "Direccion": string,
-    "ID": number,
+    "id": number,
     "IDMunicipio": number,
     "NumeroPerteneciente": string,
     "NumeroT": number,
@@ -26,10 +27,11 @@ export interface Asociado{
     "name": string
 }
 
-
+// interfaz de actualizar asociado request
 export interface ActualizarAsociadoProps{
     "Activo": boolean,
-    "Apellido": string,
+    "Apellido1": string,
+    "Apellido2": string,
     "Carnet": number,
     "Direccion": string,
     "IDMunicipio": number,
@@ -38,4 +40,9 @@ export interface ActualizarAsociadoProps{
     "Sexo": boolean,
     "id": number,
     "name": string
+}
+
+export interface DinamicListParam {
+    "page_id": number,
+    "page_size": number
 }

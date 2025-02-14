@@ -2,13 +2,12 @@ import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import {  FaUserPlus, FaHome, FaUserEdit } from "react-icons/fa";
 import "./App.css";
-import Asociados from "./pages/Asociados/Asociados";
+import Asociados from "./pages/Asociados/ListarAsociados";
 import User from "./pages/User/User";
 import { FaPerson } from "react-icons/fa6";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaTwitter} from "react-icons/fa";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
-
 
 function Navbar () {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +21,7 @@ function Navbar () {
           <Link to="/asociado" className="text-white hover:text-blue-200 flex items-center gap-2"><FaPerson size={20} />Asociados</Link>
           <Link to="/user" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserEdit size={20} />Editar Usuario</Link>
           <Link to="/auth/Login" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserPlus size={20} />Login/Registrarse</Link>
+          {/* <Link to="/sociales" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserPlus size={20} />Sociales</Link> */}
         </div>
         <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

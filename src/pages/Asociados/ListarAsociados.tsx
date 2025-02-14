@@ -1,85 +1,68 @@
-import { useState, useEffect } from "react";
-import { FiEdit, FiEye, FiTrash2, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiEdit, FiEye, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { BiSearch } from "react-icons/bi";
 import AñadirAsociado from "./AñadirAsociado";
-import { AsociadoProps } from "../../types/asociados";
-import { getAsociado } from "../../service/ApiEjemplo";
+import { ActualizarAsociadoProps, Asociado} from "../../types/asociados";
+import { getAsociados } from "../../service/ApiEjemplo";
+import ModificarAsociado from "./ModificarAsociado";
+import { FaTrash } from "react-icons/fa";
+
 
 export default function Asociados() {
-    const [asociados, setAsociado] = useState<AsociadoProps[]>([]);
+    const [asociadoData, setAsociadoData] = useState<Asociado[]>([]);
+    const [error, setError] = useState<string | null > (null)
+
+    const [selectedAsociado, setSelectedAsociado] = useState<Asociado | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [sortConfig, setSortConfig] = useState<{
-        key: keyof AsociadoProps | "";
-        direction: "ascending" | "descending";
-    }>({
-        key: "",
-        direction: "ascending",
-    });
 
-    // Cargar usuarios desde la API
+    
+    // Funcion para actualizar el asociado luego de editar
+    const actualizarAsociado = (asociadoActualizado: ActualizarAsociadoProps) => {
+            setAsociadoData((prev) => prev.map((asociado) => asociado.id === asociadoActualizado.id ? {...asociado, ...asociadoActualizado}: asociado
+        )
+    );
+        setSelectedAsociado(null);
+    };
+
+    //para paginacion
+    const page_id = currentPage
+    const page_size = itemsPerPage
+
+
+   // Funcion para obtener los asociados
+    const fetchAsociados = async () => {
+        try {
+            const data = await getAsociados(page_id, page_size);
+            setAsociadoData(data);
+        } catch (error: any) {
+            setError(error.message || "Error al cargar los asociados");
+        }
+    };
+
+    // Ejecutar fetchAsociados al montar y cuando cambien currentPage o itemsPerPage
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const data = await getAsociado();
-                setAsociado(data);
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
-        };
+        fetchAsociados()
+    }, [currentPage, itemsPerPage])
 
-        fetchUsers();
-    }, []);
+    // Funcion para agregar un nuevo asociado
+    const handleAddUser = (nuevoAsociado: Asociado) => {
+        // Actualizamos el estado agregando el nuevo asociado
+        setAsociadoData ((prev) => [...prev, nuevoAsociado])
+    }
 
-    const handleAddUser = (newAsociado: AsociadoProps) => {
-        setAsociado((prevAsociado) => [...prevAsociado, newAsociado]);
-    };
+    // Filtrado de busqueda 
+    const filteredAsociados = asociadoData.filter((asociado) => 
+        asociado.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
 
+    // Calculamos indices para la paginacion 
+    const indexOfLastItem = currentPage * itemsPerPage
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage
+    const currentAsociados = filteredAsociados.slice(indexOfFirstItem, indexOfLastItem)
+    const totalAsociados = filteredAsociados.length
 
-    // Filtrar usuarios por término de búsqueda
-    const filteredData = asociados.filter((asociado) => {
-        return Object.keys(asociado).some((key) => {
-            const value = asociado[key as keyof AsociadoProps];
-
-            if (typeof value === "object" && value !== null) {
-                // Filtrar propiedades anidadas como 'address'
-                return Object.values(value).some((nestedValue) => {
-                    if (typeof nestedValue === "string") {
-                        return nestedValue.toLowerCase().includes(searchTerm.toLowerCase());
-                    }
-                    return false;
-                });
-            }
-
-            if (typeof value === "string" || typeof value === "number") {
-                return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
-            }
-
-            return false;
-        });
-    });
-
-    // Ordenar datos
-    const sortedData = [...filteredData].sort((a, b) => {
-        if (!sortConfig.key) return 0;
-        const direction = sortConfig.direction === "ascending" ? 1 : -1;
-        const key = sortConfig.key as keyof AsociadoProps;
-        if (a[key] < b[key]) return -1 * direction;
-        if (a[key] > b[key]) return 1 * direction;
-        return 0;
-    });
-
-    // Paginación
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
-
-    // Cambiar el estado de ordenamiento
-    const handleSort = (key: keyof AsociadoProps) => {
-        const direction = sortConfig.key === key && sortConfig.direction === "ascending" ? "descending" : "ascending";
-        setSortConfig({ key, direction });
-    };
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-lg">
@@ -101,22 +84,23 @@ export default function Asociados() {
                         value={itemsPerPage}
                         onChange={(e) => setItemsPerPage(Number(e.target.value))}
                     >
-                        <option value={5}>5 / page</option>
                         <option value={10}>10 / page</option>
-                        <option value={15}>15 / page</option>
+                        <option value={20}>20 / page</option>
+                        <option value={30}>30 / page</option>
                     </select>
                 </div>
             </div>
 
+            {error && <p className="text-red-600">{error} </p>}
+
             <div className="overflow-x-auto">
                 <table className="w-full table-auto">
-                    <thead className="">
+                    <thead>
                         <tr className="bg-gray-100 text-left text-lg text-[20px] ">
-                            {["Nombre", "Primer Apellido", "Segundo Apellido", "CI", "Sexo", "Dirección", "Municipio", "Número Movil", "Otro Teléfono", "Activo"].map((header, index) => (
+                            {["Nombre", "Primer Apellido", "Segundo Apellido", "CI", "Sexo", "Dirección", "Municipio", "Número Movil", "Otro Teléfono", "Activo"].map((header) => (
                                 <th
-                                    key={index}
-                                    className="px-4 py-2 cursor-pointer"
-                                    onClick={() => handleSort(header.toLowerCase() as keyof AsociadoProps)}
+                                    key={header}
+                                    className="px-4 py-2"
                                 >
                                     {header}
                                 </th>
@@ -125,27 +109,32 @@ export default function Asociados() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentItems.map((asociado, index) => (
-                            <tr key={index} className="border-b hover:bg-gray-50">
+                        {currentAsociados.map((asociado) => (
+                            <tr key={asociado.id} className="border-b hover:bg-gray-50">
                                 <td className="px-4 py-2 text-lg">{asociado.name}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Apellido1}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Apellido2}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Carnet}</td>
-                                <td className="px-4 py-2 text-lg">{asociado.Sexo}</td>
+                                <td className="px-4 py-2 text-lg">{asociado.Sexo ? "Masculino": "Femenino"}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Direccion}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.IDMunicipio}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.NumeroPerteneciente}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.NumeroT}</td>
+                                <td className="px-4 py-2 text-lg">{asociado.Activo ? "Activo": "Inactivo"}</td>
                                 <td className="px-4 py-2 text-lg">
                                     <div className="flex space-x-2">
                                         <button className="p-1 text-blue-600 hover:text-blue-800">
                                             <FiEye className="w-5 h-5" />
                                         </button>
-                                        <button className="p-1 text-green-600 hover:text-green-800">
+                                        {/* Botón para editar */}
+                                        <button
+                                            onClick={() => setSelectedAsociado(asociado)}
+                                            className="p-1 text-green-600 hover:text-green-800"
+                                        >
                                             <FiEdit className="w-5 h-5" />
                                         </button>
                                         <button className="p-1 text-red-600 hover:text-red-800">
-                                            <FiTrash2 className="w-5 h-5" />
+                                            <FaTrash className="w-5 h-5" />
                                         </button>
                                     </div>
                                 </td>
@@ -155,9 +144,16 @@ export default function Asociados() {
                 </table>
             </div>
 
+            {selectedAsociado && (
+                <ModificarAsociado
+                asociadosData={selectedAsociado}
+                onUpdate={() => actualizarAsociado}
+                onCancel={() => setSelectedAsociado(null)}
+            />)}
+
             <div className="flex justify-between items-center mt-6">
                 <span className="text-sm text-gray-600">
-                    Mostrando {indexOfFirstItem + 1} al {Math.min(indexOfLastItem, sortedData.length)} de {sortedData.length} elementos
+                Mostrando {indexOfFirstItem + 1} al {Math.min(indexOfLastItem, totalAsociados)} de {" "} {totalAsociados} elementos
                 </span>
                 <div className="flex space-x-2">
                     <button
@@ -168,12 +164,10 @@ export default function Asociados() {
                         <FiChevronLeft className="w-5 h-5" />
                     </button>
                     <button
-                        onClick={() =>
-                            setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(sortedData.length / itemsPerPage)))
-                        }
-                        disabled={currentPage === Math.ceil(sortedData.length / itemsPerPage)}
-                        className="p-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-                    >
+                            onClick={() => setCurrentPage(prev => prev + 1)}
+                            disabled={indexOfLastItem >= totalAsociados}
+                            className="p-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
+                        >
                         <FiChevronRight className="w-5 h-5" />
                     </button>
                 </div>
