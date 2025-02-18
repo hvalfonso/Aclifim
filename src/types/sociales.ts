@@ -1,3 +1,4 @@
+// interfaz de crear datos sociales request
 export interface DatosSocialesProps {
     "estadoCivil": string,
     "id": number,
@@ -5,6 +6,7 @@ export interface DatosSocialesProps {
     "occupacion": string
 }
 
+// interfaz de crear datos sociales responses
 export interface DatosSociales {
     "estado_civil": string,
     "id": number,
@@ -12,7 +14,7 @@ export interface DatosSociales {
     "integracion_revolucionaria": string,
     "ocupacion": string
 }
-
+// interfaz de actualizar datos sociales request
 export interface ActualizarDatosSocialesProps {
     "estadocivil": string,
     "id": number,
@@ -20,6 +22,7 @@ export interface ActualizarDatosSocialesProps {
     "occupacion": string
 }
 
+// interfaz de actualizar datos sociales responses
 export interface ActualizarDatosSociales{
     "estadocivil": string,
     "id": number,

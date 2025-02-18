@@ -1,14 +1,21 @@
 import { useState } from 'react';
 import { crearDatosSocial } from '../../service/APISocial';
-import { DatosSocialesProps } from '../../types/sociales'; // Tipo de los datos a enviar
+import { DatosSociales, DatosSocialesProps } from '../../types/sociales'; // Tipo de los datos a enviar
+import { Asociado } from '../../types/asociados';
 // import { FiSave } from 'react-icons/fi';
 
-const AñadirDatosSociales = ({ idAsociado }: { idAsociado: number }) => {
-    const [formData, setFormData] = useState<DatosSocialesProps>({
+interface AñadirDatosSocialesProps{
+  onDatosSocialesAdded: (datos: DatosSociales) => void;
+  asociado: Asociado
+}
+
+export default function AñadirDatosSociales ({onDatosSocialesAdded, asociado}: AñadirDatosSocialesProps) {
+  const [showForm, setShowForm] = useState(false);  
+  const [formData, setFormData] = useState<DatosSocialesProps>({
         estadoCivil: '',
         integracionRevolucionaria: '',
         occupacion: '',
-        id : idAsociado,
+        id : asociado.ID,
         // Rellena con los demás campos necesarios
     });
 
@@ -115,5 +122,3 @@ const AñadirDatosSociales = ({ idAsociado }: { idAsociado: number }) => {
     </div>
     );
 };
-
-export default AñadirDatosSociales;

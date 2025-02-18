@@ -1,33 +1,16 @@
-import axiosInstance from "./axiosInstance";
+// src/service/APIGeneral.ts
+import axiosInstance from "./axiosInstances";
+import { Provincia, Municipio } from "../types/general";
 
-export const getAllProvincias = async () => {
-    try {
-       return await axiosInstance.get("/provincias")
-    } catch (error) {
-        console.log(error)
-    }
+// Obtiene TODAS las provincias
+export async function getProvincias() {
+  // GET /provincias → array de { id, name }
+  return axiosInstance.get<Provincia[]>("/provincias");
 }
 
-export const getProvincias = async (id: number) => {
-    try {
-       return await axiosInstance.get(`/provincias/${id}`)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export const getAllMunicipios = async (id: number) => {
-    try {
-       return await axiosInstance.get(`/municipios/${id}`)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export const getMunicipios = async (id: number) => {
-    try {
-       return await axiosInstance.get(`/municipio/${id}`)
-    } catch (error) {
-        console.log(error)
-    }
+// Obtiene múltiples municipios de la provincia con id
+export async function getMunicipios(id: number) {
+  // Asegúrate de que la ruta /municipios/:id retorne un array
+  // Ej: [ { "id": 10, "id_provincia": 1, "name": "Viñales" }, ... ]
+  return axiosInstance.get<Municipio[]>(`/municipios/${id}`);
 }

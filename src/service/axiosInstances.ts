@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const axiosInstanceEjemplo = axios.create({
+const axiosInstance = axios.create({
     baseURL: "http://localhost:8080/", // Usa una variable de entorno si está disponible
     timeout: 5000,
     headers: {
@@ -9,7 +9,7 @@ const axiosInstanceEjemplo = axios.create({
 });
 
 // Interceptor para incluir token en cada solicitud si está disponible
-axiosInstanceEjemplo.interceptors.request.use(
+axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
         if (token) {
@@ -23,7 +23,7 @@ axiosInstanceEjemplo.interceptors.request.use(
 );
 
 // Interceptor para manejar respuestas y errores globalmente
-axiosInstanceEjemplo.interceptors.response.use(
+axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
         console.error("Error en la API:", error.response?.data || error.message);
@@ -31,4 +31,4 @@ axiosInstanceEjemplo.interceptors.response.use(
     }
 );
 
-export default axiosInstanceEjemplo;
+export default axiosInstance;

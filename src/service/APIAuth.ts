@@ -1,5 +1,5 @@
 import { LoginProps, RegisterProps, TokenProps } from "../types/auth";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "./axiosInstances";
 
 
 // Para el post de login 

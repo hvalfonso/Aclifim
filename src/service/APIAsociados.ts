@@ -1,59 +1,55 @@
-import { ActualizarAsociadoProps, AsociadoProps } from "../types/asociados";
-import axiosInstance from "./axiosInstance";
+import { ActualizarAsociadoProps, Asociado, AsociadoProps, DinamicListParam} from "../types/asociados";
+import axiosInstances from "./axiosInstances";
 
 
-export const getAllAsociados = async () => {
-    try {
-        return await axiosInstance.get("/asociado")
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export const getAsociado = async (id: number) => {
-    try {
-        return await axiosInstance.get(`/asociado/${id}`)
-    } catch (error) {
-        console.log(error)
-    }
+// Endpoint: GET /asociado
+// Modificar la función getAsociado para tipar correctamente la respuesta
+export const getAsociados = async (
+  page_id: number,
+  page_size: number
+): Promise<Asociado[]> => {
+  // Creamos el query string esperado: "page_id=1&page_size=5"
+  const response = await axiosInstances.get('/asociados', {
+    params: {page_id, page_size}
+  })
+  return response.data
 }
 
 
-// Para el post 
-export const createAsociado = async (data: AsociadoProps ) => {
-    try {
-        return await axiosInstance.post(`/asociado`, data)
-    } catch (error) {
-        console.log(error)
-    }
+//Endpoint: Post /asociado/dinamic
+export const getAsociadosDinamic = async (
+  params: DinamicListParam
+): Promise<Asociado[]> => {
+  const response = await axiosInstances.post('/asociados/dinamic', params)
+  return response.data
+}
+
+  // Endpoint Post /asociado
+  // Para crear un nuevo asociado
+export const createAsociado = async (nuevoAsociado: AsociadoProps): Promise<Asociado> => {
+    const response = await axiosInstances.post("/asociado", nuevoAsociado);
+    return response.data;
+};
+
+
+// Endpoint Put/asociado
+// para actualizar un asociado, la respuesta  es un string
+export const updateAsociado = async (asociado: ActualizarAsociadoProps): Promise<string> => {
+  const {id, ...rest} = asociado
+  const response = await axiosInstances.put(`/asociado/${id}`, rest)
+  return response.data
+};
+
+// Endpoint Get /asociado/{id}
+export const getAsociadoByID = async (id: number): Promise<Asociado> => {
+  const response = await axiosInstances.get(`/asociados/${id}`)
+  return response.data
 }
 
 
-// Para el delete
-export const deleteAsociado = async (id: number) => {
-    try {
-        return await axiosInstance.delete(`/asociado/${id}`)
-    } catch (error) {
-        console.log(error)
-    }
-}
+// Endpoint Delete /asociado/{id}
+export const deleteAsociado = async (id: number): Promise<string> => {
+  const response = await axiosInstances.delete(`/asociado/${id}`)
+  return response.data
+};
 
-
-// Para el put tiene props 
-export const updateAsociado = async (data: ActualizarAsociadoProps) => {
-    try {
-        return await axiosInstance.put(`/asociado/${data}`)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-
-// Aqui estaba getAsociadoDinamic y en el swagger sale como Post
-export const getAsociadoDinamic = async () => {
-    try {
-        return await axiosInstance.get(`/asociado/dinamic`)
-    } catch (error) {
-        console.log(error)
-    }
-}

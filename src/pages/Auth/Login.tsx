@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import { MdPerson } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from "../../service/axiosEjemplo"; // Ajusta la ruta si es necesario
+import axiosInstance from "../../service/axiosInstances"; // Ajusta la ruta si es necesario
 
 export default function Login() {
     const [username, setUsername] = useState<string>("");
@@ -16,18 +16,26 @@ export default function Login() {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-
+      
         try {
             const response = await axiosInstance.post("/login", { username, password });
-            const { accessToken } = response.data;
+            const { accessToken, provincia } = response.data;
+
+            // Guarda el token
             localStorage.setItem("token", accessToken);
-            navigate("/dashboard"); // Redirige tras el login
-        } catch (err: any) {
+
+          // Verifica si provincia tiene un id numérico y guárdalo
+            if (response.data.provincia_id) {
+                localStorage.setItem("provincia", String(response.data.provincia_id));
+            }
+    
+            navigate("/");
+            } catch (err: any) {
             setError(err.response?.data?.message || "Error al iniciar sesión");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+            }
+
+      };
+      
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">

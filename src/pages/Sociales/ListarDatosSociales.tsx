@@ -2,14 +2,19 @@ import { useEffect, useState } from "react";
 import { FiEdit2, FiDelete } from "react-icons/fi";
 import { obtenerDatosSocial } from "../../service/APISocial";
 import { DatosSociales } from "../../types/sociales";
+import { Asociado } from "../../types/asociados";
 
-const ListarDatosSociales = ({idAsociado}: {idAsociado: number}) => {
+interface DatosSocialesProps {
+  asociado: Asociado;
+}
+
+export default function ListarDatosSociales ({asociado}: DatosSocialesProps){
   const [datosSociales, setDatosSociales] = useState<DatosSociales[]>([]);
 
   useEffect(() => {
     const fetchDatos = async () => {
       try {
-        const response = await obtenerDatosSocial(idAsociado); // Usa el ID adecuado
+        const response = await obtenerDatosSocial(asociado.ID); // Usa el ID adecuado
         setDatosSociales(response.data);
       } catch (error) {
         console.error("Error al obtener los datos", error);
@@ -53,5 +58,3 @@ const ListarDatosSociales = ({idAsociado}: {idAsociado: number}) => {
     </div>
   );
 };
-
-export default ListarDatosSociales;

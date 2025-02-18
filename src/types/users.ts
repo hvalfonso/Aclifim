@@ -1,20 +1,20 @@
 
-// este es el put de user/password.
-export interface PasswordProps {
+// actualizar password user request
+export interface PasswordUserRequest {
     "id": number,
+    currentPassword?: string;
     "password": string,
     "password2": string
 }
 
-// este es el put de user/upgrade 
-export interface UpgradeProps {
+// actualizar hace que un usuario se vuelva a super usuario
+export interface UpgradeRequest {
     "id": number,
     "valid": boolean
 }
 
-// este es el get/users get many users 
-
-export interface Getusers {
+// obtiene un usuario por su id response
+export interface Getuser {
         "created_at": string;
         "email": string;
         "municipio": string;
@@ -22,16 +22,14 @@ export interface Getusers {
         "username": string
 }
 
-// ejemplo
-export interface User {
-    "id": number;
-    "name": string;
-    "email": string;
-    "address": {
-        "street": string,
-        "suite": string,
-        "city": string,
-    };
-    "phone": number,
+// Obtiene a muchos usuarios response 
+export interface GetUsers {
+    "user": {
+        "created_at": string,
+        "email": string,
+        "municipio": string,
+        "provincia": string,
+        "username": string
+    } []
 }
 

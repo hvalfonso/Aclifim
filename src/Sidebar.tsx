@@ -20,7 +20,7 @@ function Navbar () {
           <Link to="/" className="text-white hover:text-blue-200 flex items-center gap-2"><FaHome size={20}/>Inicio</Link>
           <Link to="/asociado" className="text-white hover:text-blue-200 flex items-center gap-2"><FaPerson size={20} />Asociados</Link>
           <Link to="/user" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserEdit size={20} />Editar Usuario</Link>
-          <Link to="/auth/Login" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserPlus size={20} />Login/Registrarse</Link>
+          <Link to="/auth/Login" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserPlus size={20} />Salir</Link>
           {/* <Link to="/sociales" className="text-white hover:text-blue-200 flex items-center gap-2"><FaUserPlus size={20} />Sociales</Link> */}
         </div>
         <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white">
@@ -256,7 +256,7 @@ const Sidebar = () => {
           <Route path="/asociado" element={<Asociados />} />
           <Route path="/user" element={<User />} />
           <Route path="/auth/Login" element={<Login />} />
-          <Route path="/auth/Register" element={<Register />} />
+          <Route path="/auth/register" element={<Register />} />
         </Routes>
       </div>
     </Router>

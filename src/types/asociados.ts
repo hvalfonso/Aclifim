@@ -19,7 +19,7 @@ export interface Asociado{
     "Apellido2": string,
     "Carnet": number,
     "Direccion": string,
-    "id": number,
+    "ID": number,
     "IDMunicipio": number,
     "NumeroPerteneciente": string,
     "NumeroT": number,

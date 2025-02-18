@@ -1,15 +1,15 @@
-import { PasswordProps } from "../types/users";
-import axiosInstance from "./axiosInstance";
+import { PasswordUserRequest } from "../types/users";
+import axiosInstance from "./axiosInstances";
 
 
-export const getAllUsers = async () => {
-    try {
-        return await axiosInstance.get("/users")
-    } catch (error) {
-        console.log(error)
-    }
+// export const getAllUsers = async () => {
+//     try {
+//         return await axiosInstance.get("/users")
+//     } catch (error) {
+//         console.log(error)
+//     }
 
-}
+// }
 
 export const getUser = async (id: number) => {
     try {
@@ -19,13 +19,10 @@ export const getUser = async (id: number) => {
     }
 }
 
-// EJEMPLO
-export const updatePass = async (data: PasswordProps) => {
-    try {
-        return await axiosInstance.put(`/user/password`, data)
-    } catch (error) {
-        console.log(error)
-    }
+// Endpoint para cambiar contraseña 
+export const updatePass = async (data: PasswordUserRequest): Promise<string> => {
+    const response = await axiosInstance.put("/user/password", data)
+    return response.data
 }
 
 export const upgradeUser = async () => {

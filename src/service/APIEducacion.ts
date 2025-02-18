@@ -1,6 +1,6 @@
 import { ActividadEducativaProps, ActualizarActividadEducativaProps } from "../types/educativa"
 import { ActEstudiosActualesProps, EstudiosActualesProps } from "../types/estudiosactuales"
-import axiosInstance from "./axiosInstance"
+import axiosInstance from "./axiosInstances"
 
 export const getActividadEducativa = async (id: number) => {
     try {

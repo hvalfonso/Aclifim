@@ -1,5 +1,5 @@
 import { ActualizarDatosSocialesProps, DatosSocialesProps } from "../types/sociales";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "./axiosInstances";
 
 export const obtenerDatosSocial = async (id: number) => {
     try {

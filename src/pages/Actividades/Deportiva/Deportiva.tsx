@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { FaEdit, FaTrash, FaCheck, FaList, FaTasks } from "react-icons/fa";
+import { Asociado } from "../../types/asociados";
 
 interface Task {
     id: number;
     text: string;
     completed: boolean;
 }
+
+
+interface Props {
+    asociado: Asociado;
+  }
 
 export default function ActiDeportiva () {
     const [tasks, setTasks] = useState<Task[]>([]);

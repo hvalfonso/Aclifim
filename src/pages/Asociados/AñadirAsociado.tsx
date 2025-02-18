@@ -1,10 +1,12 @@
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { FiPlus, FiX } from "react-icons/fi";
-import { createAsociado } from "../../service/ApiEjemplo";
+import { createAsociado } from "../../service/APIAsociados";
 import { Asociado, AsociadoProps } from "../../types/asociados";
+import { getMunicipios } from "../../service/APIGeneral"; 
+import { Municipio } from "../../types/general";
 
 interface AñadirAsociadoProps {
-  onAsociadoAdded: (nuevoAsociado: Asociado) => void
+  onAsociadoAdded: (nuevoAsociado: Asociado) => void;
 }
 
 interface FormErrors {
@@ -25,7 +27,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
     Apellido1: "",
     Apellido2: "",
     Direccion: "",
-    IDMunicipio: 1,
+    IDMunicipio: 0, // Empezamos en 0
     NumeroPerteneciente: "",
     NumeroT: 0,
     Sexo: true,
@@ -36,6 +38,30 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Estado para almacenar los municipios que cargamos
+  const [municipios, setMunicipios] = useState<Municipio[]>([]);
+
+// Lee la provincia del localStorage
+const provinciaString = localStorage.getItem("provincia") || ""; 
+const provinciaId = provinciaString ? Number(provinciaString) : 0;
+
+// ...
+useEffect(() => {
+  console.log("Provincia ID validado:", provinciaId); // Debe imprimir un número
+  if (provinciaId > 0) {
+    getMunicipios(provinciaId)
+      .then(res => setMunicipios(res.data))
+      .catch(err => {
+        console.error("Error al cargar municipios:", err);
+        setMunicipios([]);
+      });
+  } else {
+    setMunicipios([]);
+  }
+}, [provinciaId]);
+
+  
+  // Validaciones
   const validateForm = (): FormErrors => {
     const errors: FormErrors = {};
     if (!formData.name.trim()) errors.name = "Nombre es requerido";
@@ -59,12 +85,12 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
     setIsSubmitting(true);
     try {
       const nuevoAsociado = await createAsociado(formData);
-      onAsociadoAdded(nuevoAsociado); // <- Ahora sin parámetro
+      onAsociadoAdded(nuevoAsociado);
       resetForm();
       setShowForm(false);
-  } catch (error) {
-      // ... manejo de errores ...
-  }
+    } catch (error) {
+      console.error("Error al crear asociado:", error);
+    }
     setIsSubmitting(false);
   };
 
@@ -74,7 +100,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
       Apellido1: "",
       Apellido2: "",
       Direccion: "",
-      IDMunicipio: 1,
+      IDMunicipio: 0,
       NumeroPerteneciente: "",
       NumeroT: 0,
       Sexo: true,
@@ -107,6 +133,7 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Nombre */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Nombre</label>
               <input
@@ -120,127 +147,142 @@ export default function AñadirAsociado({ onAsociadoAdded }: AñadirAsociadoProp
               {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
             </div>
 
-            
-        {/* Campo Apellido */}
-        <div>
-        <label className="block text-sm font-medium text-gray-700">Primer Apellido</label>
-        <input
-          type="text"
-          value={formData.Apellido1}
-          onChange={(e) => setFormData({ ...formData, Apellido1: e.target.value })}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-            formErrors.Apellido1 ? "border-red-500" : ""
-          }`}
-        />
-        {formErrors.Apellido1 && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido1}</p>}
-      </div>
+            {/* Primer Apellido */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Primer Apellido</label>
+              <input
+                type="text"
+                value={formData.Apellido1}
+                onChange={(e) => setFormData({ ...formData, Apellido1: e.target.value })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Apellido1 ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.Apellido1 && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido1}</p>}
+            </div>
 
-      {/* Campo Apellido2 */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Segundo Apellido</label>
-        <input
-          type="text"
-          value={formData.Apellido2}
-          onChange={(e) => setFormData({ ...formData, Apellido2: e.target.value })}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-            formErrors.Apellido2 ? "border-red-500" : ""
-          }`}
-        />
-        {formErrors.Apellido2 && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido2}</p>}
-      </div>
+            {/* Segundo Apellido */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Segundo Apellido</label>
+              <input
+                type="text"
+                value={formData.Apellido2}
+                onChange={(e) => setFormData({ ...formData, Apellido2: e.target.value })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Apellido2 ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.Apellido2 && <p className="mt-1 text-sm text-red-600">{formErrors.Apellido2}</p>}
+            </div>
 
-      {/* Numero Perteneciente*/}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Número Movil</label>
-        <input
-          type="number"
-          value={formData.NumeroPerteneciente}
-          onChange={(e) => setFormData({ ...formData, NumeroPerteneciente: e.target.value })}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-            formErrors.NumeroPerteneciente ? "border-red-500" : ""
-          }`}
-        />
-        {formErrors.NumeroPerteneciente && <p className="mt-1 text-sm text-red-600">{formErrors.NumeroPerteneciente}</p>}
-      </div>
-      {/* Campo Teléfono */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Teléfono</label>
-        <input
-          type="number"
-          value={formData.NumeroT}
-          onChange={(e) => setFormData({ ...formData, NumeroT: parseInt(e.target.value) })}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-            formErrors.NumeroT ? "border-red-500" : ""
-          }`}
-        />
-        {formErrors.NumeroT && <p className="mt-1 text-sm text-red-600">{formErrors.NumeroT}</p>}
-      </div>
+            {/* Número Móvil */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Número Móvil</label>
+              <input
+                type="number"
+                value={formData.NumeroPerteneciente}
+                onChange={(e) => setFormData({ ...formData, NumeroPerteneciente: e.target.value })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.NumeroPerteneciente ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.NumeroPerteneciente && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.NumeroPerteneciente}</p>
+              )}
+            </div>
 
-      {/* Carnet de Identidad */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">CI</label>
-        <input
-          type="number"
-          value={formData.Carnet}
-          onChange={(e) => setFormData({ ...formData, Carnet: parseInt(e.target.value) })}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-            formErrors.Carnet ? "border-red-500" : ""
-          }`}
-        />
-        {formErrors.Carnet && <p className="mt-1 text-sm text-red-600">{formErrors.Carnet}</p>}
-      </div>
+            {/* Teléfono */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Teléfono</label>
+              <input
+                type="number"
+                value={formData.NumeroT}
+                onChange={(e) => setFormData({ ...formData, NumeroT: parseInt(e.target.value) })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.NumeroT ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.NumeroT && <p className="mt-1 text-sm text-red-600">{formErrors.NumeroT}</p>}
+            </div>
 
-      {/* Campo Dirección */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Dirección</label>
-        <input
-          type="text"
-          value={formData.Direccion}
-          onChange={(e) => setFormData({ ...formData, Direccion: e.target.value })}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-            formErrors.Direccion ? "border-red-500" : ""
-          }`}
-        />
-        {formErrors.Direccion && <p className="mt-1 text-sm text-red-600">{formErrors.Direccion}</p>}
-      </div>
+            {/* Carnet de Identidad */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">CI</label>
+              <input
+                type="number"
+                value={formData.Carnet}
+                onChange={(e) => setFormData({ ...formData, Carnet: parseInt(e.target.value) })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Carnet ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.Carnet && <p className="mt-1 text-sm text-red-600">{formErrors.Carnet}</p>}
+            </div>
 
-      {/* Campo Municipio */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Municipio</label>
-        <input
-          type="number"
-          value={formData.IDMunicipio}
-          onChange={(e) => setFormData({ ...formData, IDMunicipio: e.target.value ? parseInt(e.target.value) : 0 })}
-          className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-            formErrors.IDMunicipio ? "border-red-500" : ""
-          }`}
-        />
-        {formErrors.IDMunicipio && <p className="mt-1 text-sm text-red-600">{formErrors.IDMunicipio}</p>}
-      </div>
+            {/* Dirección */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Dirección</label>
+              <input
+                type="text"
+                value={formData.Direccion}
+                onChange={(e) => setFormData({ ...formData, Direccion: e.target.value })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  formErrors.Direccion ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.Direccion && <p className="mt-1 text-sm text-red-600">{formErrors.Direccion}</p>}
+            </div>
 
-      {/* Campo Sexo */}
-          <div>
+
+            {/* Municipio (select) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Municipio</label>
+              <select
+                value={formData.IDMunicipio}
+                onChange={(e) => setFormData({ ...formData, IDMunicipio: Number(e.target.value) })}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${formErrors.IDMunicipio ? "border-red-500" : ""}`}
+              >
+                <option value={0}>-- Selecciona un municipio --</option>
+                {municipios.length > 0 ? (
+                  municipios.map((mun) => (
+                    <option key={mun.id} value={mun.id}>
+                      {mun.name}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No se encontraron municipios</option>
+                )}
+              </select>
+              {formErrors.IDMunicipio && <p className="mt-1 text-sm text-red-600">{formErrors.IDMunicipio}</p>}
+            </div>
+
+            {/* Sexo */}
+            <div>
               <label className="block text-sm font-medium text-gray-700">Sexo</label>
               <select
                 value={formData.Sexo.toString()}
                 onChange={(e) => setFormData({ ...formData, Sexo: e.target.value === "true" })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 <option value="true">Masculino</option>
                 <option value="false">Femenino</option>
               </select>
             </div>
 
+            {/* Activo */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Estado de actividad</label>
               <select
                 value={formData.Activo.toString()}
                 onChange={(e) => setFormData({ ...formData, Activo: e.target.value === "true" })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 <option value="true">Activo</option>
                 <option value="false">Inactivo</option>
               </select>
             </div>
 
+            {/* Botones */}
             <div className="flex gap-4 pt-4">
               <button
                 type="submit"

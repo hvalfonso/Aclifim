@@ -3,24 +3,28 @@ import { FiEdit, FiEye, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { BiSearch } from "react-icons/bi";
 import AñadirAsociado from "./AñadirAsociado";
 import { ActualizarAsociadoProps, Asociado} from "../../types/asociados";
-import { getAsociados } from "../../service/ApiEjemplo";
+import { getAsociados } from "../../service/APIAsociados";
 import ModificarAsociado from "./ModificarAsociado";
 import { FaTrash } from "react-icons/fa";
+import EliminarAsociado from "./EliminarAsociado";
+import EstadoAsociadoModal from './ViewInfo';
 
 
 export default function Asociados() {
     const [asociadoData, setAsociadoData] = useState<Asociado[]>([]);
     const [error, setError] = useState<string | null > (null)
+    const [selectedIdToDelete, setSelectIdToDelete] = useState<Asociado | null>(null)
+    const [viewingAsociado, setViewingAsociado] = useState<Asociado | null>(null);
+
 
     const [selectedAsociado, setSelectedAsociado] = useState<Asociado | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
-
     
     // Funcion para actualizar el asociado luego de editar
     const actualizarAsociado = (asociadoActualizado: ActualizarAsociadoProps) => {
-            setAsociadoData((prev) => prev.map((asociado) => asociado.id === asociadoActualizado.id ? {...asociado, ...asociadoActualizado}: asociado
+            setAsociadoData((prev) => prev.map((asociado) => asociado.ID === asociadoActualizado.id ? {...asociado, ...asociadoActualizado}: asociado
         )
     );
         setSelectedAsociado(null);
@@ -53,16 +57,37 @@ export default function Asociados() {
     }
 
     // Filtrado de busqueda 
-    const filteredAsociados = asociadoData.filter((asociado) => 
-        asociado.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+const filteredAsociados = asociadoData.filter((asociado) => {
+    const term = searchTerm.toLowerCase();
+  
+    const sexoTexto = asociado.Sexo ? "masculino" : "femenino";
+    const activoTexto = asociado.Activo ? "activo" : "inactivo";
+  
+    return (
+      // Coincidencia con name
+      asociado.name.toLowerCase().includes(term) ||
+      // Coincidencia con Apellido1
+      asociado.Apellido1.toLowerCase().includes(term) ||
+      // Coincidencia con Apellido2
+      asociado.Apellido2.toLowerCase().includes(term) ||
+      // Coincidencia con carnet (conversión a string)
+      String(asociado.Carnet).includes(term) ||
+      // Coincidencia con sexo (string “masculino”/“femenino”)
+      sexoTexto.includes(term) ||
+      // Coincidencia con activo (string “activo”/“inactivo”)
+      activoTexto.includes(term)
+      // Si deseas también filtrar por dirección, municipio, etc.:
+      // asociado.Direccion.toLowerCase().includes(term) ||
+      // ...
+    );
+  });
+  
 
     // Calculamos indices para la paginacion 
     const indexOfLastItem = currentPage * itemsPerPage
     const indexOfFirstItem = indexOfLastItem - itemsPerPage
     const currentAsociados = filteredAsociados.slice(indexOfFirstItem, indexOfLastItem)
     const totalAsociados = filteredAsociados.length
-
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-lg">
@@ -109,8 +134,8 @@ export default function Asociados() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentAsociados.map((asociado) => (
-                            <tr key={asociado.id} className="border-b hover:bg-gray-50">
+                        {currentAsociados.map((asociado) =>
+                            <tr key={asociado.ID} className="border-b hover:bg-gray-50">
                                 <td className="px-4 py-2 text-lg">{asociado.name}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Apellido1}</td>
                                 <td className="px-4 py-2 text-lg">{asociado.Apellido2}</td>
@@ -123,9 +148,12 @@ export default function Asociados() {
                                 <td className="px-4 py-2 text-lg">{asociado.Activo ? "Activo": "Inactivo"}</td>
                                 <td className="px-4 py-2 text-lg">
                                     <div className="flex space-x-2">
-                                        <button className="p-1 text-blue-600 hover:text-blue-800">
+                                        <button
+                                            onClick={() => setViewingAsociado(asociado)} 
+                                            className="p-1 text-blue-600 hover:text-blue-800">
                                             <FiEye className="w-5 h-5" />
                                         </button>
+
                                         {/* Botón para editar */}
                                         <button
                                             onClick={() => setSelectedAsociado(asociado)}
@@ -133,15 +161,21 @@ export default function Asociados() {
                                         >
                                             <FiEdit className="w-5 h-5" />
                                         </button>
-                                        <button className="p-1 text-red-600 hover:text-red-800">
+
+                                        <button 
+                                            onClick={() => setSelectIdToDelete (asociado)}
+                                            className="p-1 text-red-600 hover:text-red-800"
+                                            >
                                             <FaTrash className="w-5 h-5" />
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        )
+                        }
                     </tbody>
                 </table>
+                
             </div>
 
             {selectedAsociado && (
@@ -150,6 +184,25 @@ export default function Asociados() {
                 onUpdate={() => actualizarAsociado}
                 onCancel={() => setSelectedAsociado(null)}
             />)}
+             
+            {selectedIdToDelete && (
+                <EliminarAsociado
+                 asociado={selectedIdToDelete}
+                 onDeleted={async () => {
+                    await fetchAsociados()
+                    setSelectIdToDelete(null)
+                 } }
+                 onCancel={() => setSelectIdToDelete(null)}
+                 />
+            )}
+
+            {viewingAsociado && (
+            <EstadoAsociadoModal
+                open={!!viewingAsociado}
+                onClose={() => setViewingAsociado(null)}
+                asociado={viewingAsociado}
+            />
+            )}
 
             <div className="flex justify-between items-center mt-6">
                 <span className="text-sm text-gray-600">

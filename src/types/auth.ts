@@ -1,8 +1,10 @@
+// Require del login
 export interface LoginProps {
     "Username": string,
     "password": string
 }
 
+// Response del Login
 export interface Login {
     "Email": string,
     "RefreshToken": string,
@@ -17,7 +19,7 @@ export interface Login {
     "session_id": string
 }
 
-
+// Require del loguin
 export interface RegisterProps {
     "email": string,
     "municipio": number,
@@ -27,6 +29,7 @@ export interface RegisterProps {
     "username": string
 }
 
+// Response del loguin
 export interface Register {
     "email": string,
     "id": number,
@@ -35,10 +38,12 @@ export interface Register {
     "username": string
 }
 
+// Require del loguin
 export interface TokenProps {
     "refresh_token": string
 }
 
+// Response del loguin
 export interface Token {
     "accessToken": string,
     "accessToken_expire_at": string
